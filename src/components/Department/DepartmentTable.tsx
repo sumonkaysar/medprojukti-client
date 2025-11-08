@@ -1,6 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const departments = [
   {
@@ -42,12 +48,21 @@ const DepartmentTable = () => {
         <Input className="grow" placeholder="Search department..." />
         <div className="flex items-center gap-2">
           <span>Rows</span>
-          <Select className="w-24">
+          <Select>
+            <SelectTrigger className="w-24">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ACTIVE">10</SelectItem>
+              <SelectItem value="INACTIVE">20</SelectItem>
+            </SelectContent>
+          </Select>
+          {/* <Select className="w-24">
             <option>10</option>
             <option>25</option>
             <option>50</option>
             <option>100</option>
-          </Select>
+          </Select> */}
         </div>
       </div>
       <div className="overflow-x-auto">
