@@ -38,7 +38,10 @@ const DepartmentForm = () => {
 
   return (
     <Form {...form}>
-      <form className="p-6 border rounded-lg bg-white space-y-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="p-6 border rounded-lg bg-white space-y-4"
+      >
         <FormField
           control={form.control}
           name="name"
