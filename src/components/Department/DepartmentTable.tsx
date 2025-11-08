@@ -7,41 +7,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import type { IDepartment } from "@/types/department.type";
 
-const departments = [
-  {
-    id: 1,
-    name: "Human Resources",
-    description: "Handles recruitment and employee relations",
-    status: "Active",
-  },
-  {
-    id: 2,
-    name: "Finance",
-    description: "Manages company finances and budgeting",
-    status: "Active",
-  },
-  {
-    id: 3,
-    name: "Marketing",
-    description: "Responsible for marketing campaigns",
-    status: "Inactive",
-  },
-  {
-    id: 4,
-    name: "IT",
-    description: "Manages the company's IT Infrastructure",
-    status: "Active",
-  },
-  {
-    id: 5,
-    name: "Sales",
-    description: "Handles sales operations and client relationships",
-    status: "Active",
-  },
-];
+interface IProps {
+  departments: IDepartment[];
+  setManageDept: React.Dispatch<
+    React.SetStateAction<{
+      selectedDept: IDepartment | null;
+      action: "delete" | "edit" | null;
+    }>
+  >;
+}
 
-const DepartmentTable = () => {
+const DepartmentTable = ({ departments, setManageDept }: IProps) => {
   return (
     <div className="p-6 border rounded-lg bg-white">
       <div className="flex flex-col sm:flex-row justify-between mb-6 gap-4">
@@ -77,24 +55,43 @@ const DepartmentTable = () => {
             </tr>
           </thead>
           <tbody>
-            {departments.map((dept) => (
-              <tr key={dept.id} className="border-b">
-                <td className="py-3 px-4">{dept.id}</td>
-                <td className="py-3 px-4">{dept.name}</td>
-                <td className="py-3 px-4">{dept.description}</td>
-                <td className="py-3 px-4">{dept.status}</td>
-                <td className="py-3 px-4">
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
-                      Edit
-                    </Button>
-                    <Button variant="destructive" size="sm">
-                      Delete
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {departments &&
+              departments.map((dept) => (
+                <tr key={dept.id} className="border-b">
+                  <td className="py-3 px-4">{dept.id}</td>
+                  <td className="py-3 px-4">{dept.name}</td>
+                  <td className="py-3 px-4">{dept.description}</td>
+                  <td className="py-3 px-4">{dept.status}</td>
+                  <td className="py-3 px-4">
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={() =>
+                          setManageDept({
+                            selectedDept: dept,
+                            action: "edit",
+                          })
+                        }
+                        variant="outline"
+                        size="sm"
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        onClick={() =>
+                          setManageDept({
+                            selectedDept: dept,
+                            action: "delete",
+                          })
+                        }
+                        variant="destructive"
+                        size="sm"
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

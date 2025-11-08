@@ -17,23 +17,58 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import type { IDepartment } from "@/types/department.type";
 import { createDepartmentZodSchema } from "@/validations/department.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import z from "zod";
 
-const DepartmentForm = () => {
+const DepartmentForm = ({
+  manageDept,
+}: {
+  manageDept: {
+    selectedDept: IDepartment | null;
+    action: "delete" | "edit" | null;
+  };
+}) => {
+  const currentDept = manageDept.action ? manageDept.selectedDept : null;
   const form = useForm<z.infer<typeof createDepartmentZodSchema>>({
     resolver: zodResolver(createDepartmentZodSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      status: "ACTIVE",
+    values: {
+      name: currentDept?.name || "",
+      description: currentDept?.description || "",
+      status: currentDept?.status || "ACTIVE",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof createDepartmentZodSchema>) => {
-    console.log(values);
+  const onSubmit = async (
+    values: z.infer<typeof createDepartmentZodSchema>
+  ) => {
+    const toastId = toast.loading("Loading...");
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        toast.error(`Login failed: ${result.message}`, { id: toastId });
+        console.log("Login failed:", result.message);
+        return;
+      }
+
+      toast.success("Login successful", { id: toastId });
+      console.log("Login successful");
+    } catch (error) {
+      toast.error("Login failed", { id: toastId });
+      console.error("Login failed:", error);
+    }
   };
 
   return (
@@ -99,17 +134,20 @@ const DepartmentForm = () => {
           )}
         />
         <div className="flex flex-wrap gap-3">
-          <Button className="bg-green-600 hover:bg-green-500 cursor-pointer">
+          <Button
+            disabled={!!manageDept.action}
+            className="bg-green-600 hover:bg-green-500 cursor-pointer"
+          >
             Add
           </Button>
           <Button
-            type="button"
+            disabled={manageDept.action !== "edit"}
             className="bg-gray-700 hover:bg-gray-600 cursor-pointer"
           >
             Update
           </Button>
           <Button
-            type="button"
+            disabled={manageDept.action !== "delete"}
             variant="destructive"
             className="cursor-pointer"
           >
