@@ -17,9 +17,12 @@ const Department = () => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/departments", {
-          credentials: "include",
-        });
+        const response = await fetch(
+          "https://medprojukti-server.vercel.app/api/departments",
+          {
+            credentials: "include",
+          }
+        );
         const data = await response.json();
         setDepartments(data.departments);
       } catch (error) {
